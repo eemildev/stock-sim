@@ -1,26 +1,54 @@
-import { cn } from "@/lib/utils"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+"use client";
+
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { signInAction } from "@/actions/user";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+const initialState = {
+  errors: {
+    form: "",
+    email: "",
+    password: "",
+  },
+  success: false,
+};
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const router = useRouter();
+  const [state, formAction, pending] = useActionState(
+    signInAction,
+    initialState,
+  );
+
+  useEffect(() => {
+    if (state.success) {
+      router.replace("/dashboard");
+      router.refresh();
+    }
+  }, [state, router]);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -31,7 +59,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form action={formAction}>
             <FieldGroup>
               <Field>
                 <Button variant="outline" type="button">
@@ -60,10 +88,15 @@ export function LoginForm({
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
+                  aria-invalid={!!state.errors?.email || !!state.errors?.form}
                   required
                 />
+                {state.errors?.email && (
+                  <FieldError>{state.errors.email}</FieldError>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -75,12 +108,29 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  aria-invalid={
+                    !!state.errors?.password || !!state.errors?.form
+                  }
+                />
+                {state.errors?.password && (
+                  <FieldError>{state.errors.password}</FieldError>
+                )}
               </Field>
+              {state.errors?.form && (
+                <FieldError>{state.errors.form}</FieldError>
+              )}
               <Field>
-                <Button type="submit">Login</Button>
+                <Button disabled={pending} type="submit">
+                  Login
+                </Button>
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <Link href="/signup">Sign up</Link>
+                  Don&apos;t have an account?{" "}
+                  <Link href="/sign-up">Sign up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -88,6 +138,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-
