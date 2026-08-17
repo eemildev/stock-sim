@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button";
 import { signUpAction } from "@/actions/user";
 import { useActionState, useEffect } from "react";
@@ -45,6 +46,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
   useEffect(() => {
     if (state.success) {
+       toast.success("Successful Sign-up")
       router.replace("/dashboard");
       router.refresh();
     }
@@ -68,7 +70,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 name="name"
                 type="text"
                 placeholder="John Doe"
-                defaultValue={state.values?.name}
+                defaultValue={state.values?.name ?? ""}
                 aria-invalid={!!state.errors?.name || !!state.errors?.form}
                 required
               />
@@ -82,7 +84,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 id="email"
                 name="email"
                 type="email"
-                defaultValue={state.values?.email}
+                defaultValue={state.values?.email ?? ""}
                 placeholder="m@example.com"
                 aria-invalid={!!state.errors?.email || !!state.errors?.form}
                 required

@@ -116,7 +116,6 @@ export async function signOutAction() {
   await auth.api.signOut({
     headers: await headers()
   })
-
   redirect("/sign-in")
 
 

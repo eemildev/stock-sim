@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner"
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ export function LoginForm({
 
   useEffect(() => {
     if (state.success) {
+      toast.success("Successful Sign-in")
       router.replace("/dashboard");
       router.refresh();
     }
