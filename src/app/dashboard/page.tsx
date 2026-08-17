@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { headers } from "next/dist/server/request/headers";
+import { headers } from "next/headers"
 
 export default async function Dashboard() {
      const session = await auth.api.getSession({

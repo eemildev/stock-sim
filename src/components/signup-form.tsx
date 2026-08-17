@@ -1,6 +1,6 @@
 "use client";
 
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { signUpAction } from "@/actions/user";
 import { useActionState, useEffect } from "react";
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 const initialState = {
   errors: {
@@ -46,11 +47,19 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
   useEffect(() => {
     if (state.success) {
-       toast.success("Successful Sign-up")
+      toast.success("Successful Sign-up");
       router.replace("/dashboard");
       router.refresh();
     }
   }, [state, router]);
+
+  const handleGoogleAuth = async () => {
+		await authClient.signIn.social({
+			provider: "google",
+			// Optional: redirect new users to a specific page
+			callbackURL: "/dashboard"
+		})
+	}
 
   return (
     <Card {...props}>
@@ -125,8 +134,15 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             {state.errors?.form && <FieldError>{state.errors.form}</FieldError>}
             <FieldGroup>
               <Field>
-                <Button type="submit">Create Account</Button>
-                <Button disabled={pending} variant="outline" type="button">
+                <Button disabled={pending} type="submit">
+                  Create Account
+                </Button>
+                <Button
+                  disabled={pending}
+                  variant="outline"
+                  type="button"
+                  onClick={()=>handleGoogleAuth()}
+                >
                   Sign up with Google
                 </Button>
                 <FieldDescription className="px-6 text-center">

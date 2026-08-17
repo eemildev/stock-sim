@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
-import { headers } from "next/dist/server/request/headers"
+import { headers } from "next/headers"
 import { APIError } from "better-auth/api"
 
 export type SignUpState = {
