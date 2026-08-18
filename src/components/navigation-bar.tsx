@@ -94,9 +94,8 @@ export async function NavigationBar() {
           </>
         )}
 
-        <NavigationMenuItem>
           <ThemeToggle />
-        </NavigationMenuItem>
+          
       </NavigationMenuList>
     </NavigationMenu>
   );
