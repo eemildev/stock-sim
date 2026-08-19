@@ -11,8 +11,7 @@ export default async function Dashboard() {
     }
   return (
    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-      <h1>Welcome {session.user.name}</h1>
-   </div>
-       
+      <h2 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">Welcome {session.user.name}</h2>
+   </div>  
   );
 }

@@ -14,11 +14,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={cn("h-full", "antialiased", inter.variable)}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="h-full flex flex-col">
         <ThemeProvider>
           <NavigationBar />
            <Toaster />
-          {children}
+           <main className="flex-1 min-h-0 overflow-hidden">
+             {children}
+           </main>
+         
         </ThemeProvider>
       </body>
     </html>

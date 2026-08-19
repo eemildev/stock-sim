@@ -104,7 +104,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input id="password" name="password" type="password" required />
+              <Input id="password" name="password" type="password" required aria-invalid={!!state.errors?.password || !!state.errors?.form}/>
               <FieldDescription>
                 Must be at least 8 characters long.
               </FieldDescription>
