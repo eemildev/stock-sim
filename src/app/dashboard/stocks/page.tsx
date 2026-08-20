@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PaginationIconsOnly } from "@/components/pagination-icons-only";
 import { StockList, StockListSkeleton } from "./stock-list";
+import { getStocks } from "@/services/stocks";
+import { StockSearch } from "./stock-search";
 
 export default function StocksPage() {
   const searchParams = useSearchParams();
 
+  const searchQuery = searchParams.get("query") || "";
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
   const outputSize = parseInt(searchParams.get("outputsize") || "25", 10);
 
@@ -16,27 +19,13 @@ export default function StocksPage() {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
+  useEffect(() => {
     async function fetchStocks() {
       setLoading(true);
       try {
-        const response = await fetch(
-          `/api/stocks?page=${currentPage}&outputsize=${outputSize}`,
-        );
-        const data = await response.json();
-
-        if (!response.ok) {
-          console.error("Failed to load stocks:", data.error);
-          return;
-        }
-
-        // Handles both plain array responses and objects with { data, count }
-        if (Array.isArray(data)) {
-          setStocks(data);
-        } else if (data && Array.isArray(data.data)) {
-          setStocks(data.data);
-          if (data.count) setTotalCount(data.count);
-        }
+        const { data, count } = await getStocks(searchQuery, currentPage, outputSize);
+        setStocks(data);
+        setTotalCount(count);
       } catch (error) {
         console.error("Failed to load stocks:", error);
       } finally {
@@ -45,10 +34,11 @@ export default function StocksPage() {
     }
 
     fetchStocks();
-  }, [currentPage, outputSize]); 
+  }, [searchQuery, currentPage, outputSize]);
 
 return (
 <div className="flex h-full flex-col items-center gap-6 overflow-hidden p-6 md:p-10">
+  <StockSearch results={totalCount} />
     <ScrollArea className="min-h-0 w-full max-w-2xl flex-1 rounded-md border p-4">
     {loading ? (
       <StockListSkeleton />
