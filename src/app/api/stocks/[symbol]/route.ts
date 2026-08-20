@@ -10,9 +10,12 @@ export async function GET(
 ) {
   const { symbol } = await params;
 
+  // Get stock historical data from TwelveData API
   try {
-    const response = await api.getQuote({
-      symbol: symbol
+    const response = await api.getTimeSeries({
+      symbol: symbol,
+      interval: "1day",
+      outputsize: 365
     });
     return NextResponse.json(response);
   } catch (error) {
