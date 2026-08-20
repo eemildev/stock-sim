@@ -5,14 +5,25 @@ import fs from "node:fs";
 
 import { db } from "./src/db";
 import { stocks } from "./src/db/schema";
-import { Stock} from "@/types/stock";
+
+type TwelveDataStock = {
+  symbol: string;
+  name: string;
+  currency: string;
+  exchange: string;
+  mic_code: string;
+  country: string;
+  type: string;
+  figi_code?: string;
+  cfi_code?: string;
+};
 
 type TwelveDataResponse = {
-  data: Stock[];
+  data: TwelveDataStock[];
 };
 
 async function main() {
-  const file = fs.readFileSync("/data/stocks.json", "utf8");
+  const file = fs.readFileSync("stocks.json", "utf8");
 
   const json = JSON.parse(file) as TwelveDataResponse;
 
