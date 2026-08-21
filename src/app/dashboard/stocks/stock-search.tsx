@@ -23,8 +23,10 @@ export function StockSearch({ results }: StockSearchProps) {
     const params = new URLSearchParams(searchParams);
     if (term) {
       params.set("query", term);
+      params.set("page", "1"); // Reset to first page on new search
     } else {
       params.delete("query");
+      params.set("page", "1"); // Reset to first page on clear search
     }
     replace(`${pathname}?${params.toString()}`);
   }

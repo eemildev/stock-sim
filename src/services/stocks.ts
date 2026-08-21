@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/db";
-import { stocks } from "@/db/schema";
+import { stocks } from "@/db/stocks-schema";
 import { count, or, ilike, eq } from "drizzle-orm";
 
 export const getStocks = async (

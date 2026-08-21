@@ -41,7 +41,7 @@ export function StockList({ stocks }: { stocks: Stock[] }) {
                 <ItemDescription>{stock.symbol}</ItemDescription>
               </ItemContent>
               <ItemContent className="flex flex-col items-end">
-                <ItemDescription>{stock.type}</ItemDescription>
+                <ItemDescription>{stock.exchange}</ItemDescription>
                 <ItemDescription>{stock.country}</ItemDescription>
               </ItemContent>
             </Item>

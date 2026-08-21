@@ -8,9 +8,6 @@ import {
     timestamp,
     unique,
     index,
-    bigint,
-    date,
-    numeric,
 } from "drizzle-orm/pg-core";
 
 export const stocks = pgTable(
@@ -63,50 +60,5 @@ export const stocks = pgTable(
         index("stocks_country_idx").on(table.country),
 
         index("stocks_exchange_idx").on(table.exchange),
-    ],
-);
-
-export const stockPrices = pgTable(
-    "stock_prices",
-    {
-        id: bigint("id", { mode: "number" }).primaryKey(),
-
-        stockId: bigint("stock_id", { mode: "number" })
-            .notNull()
-            .references(() => stocks.id, {
-                onDelete: "cascade",
-            }),
-
-        date: date("date").notNull(),
-
-        open: numeric("open", {
-            precision: 20,
-            scale: 8,
-        }),
-
-        high: numeric("high", {
-            precision: 20,
-            scale: 8,
-        }),
-
-        low: numeric("low", {
-            precision: 20,
-            scale: 8,
-        }),
-
-        close: numeric("close", {
-            precision: 20,
-            scale: 8,
-        }),
-
-        volume: bigint("volume", {
-            mode: "number",
-        }),
-    },
-    (table) => [
-        unique("stock_prices_stock_date_unique").on(
-            table.stockId,
-            table.date,
-        ),
     ],
 );

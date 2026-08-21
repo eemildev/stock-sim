@@ -3,15 +3,14 @@ import { StockDetails } from "./stock-details";
 import { getStockBySymbol } from "@/services/stocks";
 
 async function getStockData(symbol: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
   const stock = await getStockBySymbol(symbol);
 
   const [timeSeriesResponse, quoteResponse] = await Promise.all([
-    fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/time_series`, {
+    fetch(`/api/stocks/${encodeURIComponent(symbol)}/time_series`, {
       cache: "no-store",
     }),
-    fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/quote`, {
+    fetch(`/api/stocks/${encodeURIComponent(symbol)}/quote`, {
       cache: "no-store",
     }),
   ]);

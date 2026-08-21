@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { Stock } from "@/types/stock";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
