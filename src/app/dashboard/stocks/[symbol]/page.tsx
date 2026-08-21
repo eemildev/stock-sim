@@ -1,29 +1,13 @@
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { StockDetails } from "./stock-details";
-import { getStockBySymbol } from "@/services/stocks";
+import { getQuote, getStockBySymbol, getTimeSeries } from "@/services/stocks";
 
 async function getStockData(symbol: string) {
-
-  const stock = await getStockBySymbol(symbol);
-
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
-
-  const [timeSeriesResponse, quoteResponse] = await Promise.all([
-    fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/time_series`, {
-      cache: "no-store",
-    }),
-    fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/quote`, {
-      cache: "no-store",
-    }),
+  const [stock, timeseriesData, quoteData] = await Promise.all([
+    getStockBySymbol(symbol),
+    getTimeSeries(symbol),
+    getQuote(symbol),
   ]);
-
-  const [timeseriesData, quoteData] = await Promise.all([
-    timeSeriesResponse.json(),
-    quoteResponse.json(),
-  ]);
-
   return { timeseriesData, quoteData, stock };
 }
 

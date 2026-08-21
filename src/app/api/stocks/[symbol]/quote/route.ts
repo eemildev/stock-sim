@@ -1,30 +1,20 @@
 import { NextResponse } from "next/server";
+import { getQuote } from "@/services/stocks";
 
 export async function GET(
-    request: Request,
-    { params }: { params: Promise<{ symbol: string }> }
+  request: Request,
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
-    const { symbol } = await params;
-    const symbolUpper = symbol.toUpperCase();
+  const { symbol } = await params;
 
-    // Get stock quote from Finnhub API
-    try {
-        const response = await fetch("https://finnhub.io/api/v1/quote?symbol=" + symbolUpper + "&token=" + process.env.FINNHUB_API_KEY);
-        const data = await response.json();
-        return NextResponse.json(data);
-    } catch (error) {
-        if (error instanceof Error) {
-            console.error("API error:", error);
-            return NextResponse.json(
-                { error: error.message },
-                { status: 400 }
-            );
-        }
-
-        console.error("Unexpected error:", error);
-        return NextResponse.json(
-            { error: "Internal Server Error" },
-            { status: 500 }
-        );
-    }
+  try {
+    const data = await getQuote(symbol);
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Quote error:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }

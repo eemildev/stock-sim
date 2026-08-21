@@ -25,16 +25,16 @@ export type TimeSeries = {
   values: Values;
 
 }
-export type Values = [
+export type Values = 
   {
     "datetime": string,
     "open": string,
     "high": string,
     "low": string,
     "close": string,
-    "volume": string
-  },
-]
+    "volume"?: string
+  }[]
+
 
 export type Quote = {
   "c": number, // Current price

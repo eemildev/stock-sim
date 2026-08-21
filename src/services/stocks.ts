@@ -38,3 +38,36 @@ export const getStockBySymbol = async (symbol: string) => {
       where: eq(stocks.symbol, symbol.toUpperCase())
     });
   }
+
+import { MarketDataApi, CreateConfig, TwelvedataApiError } from "@twelvedata/twelvedata-node";
+
+const config = CreateConfig(process.env.TWELVEDATA_SECRET);
+const api = new MarketDataApi(config);
+
+export const getTimeSeries = async (symbol: string) => {
+  try {
+    return await api.getTimeSeries({
+      symbol,
+      interval: "1day",
+      outputsize: 365,
+    });
+  } catch (error) {
+    if (error instanceof TwelvedataApiError) {
+      console.error("API error:", error);
+      throw new Error(error.message || "TwelveData API Error");
+    }
+    console.error("Unexpected error:", error);
+    throw new Error("Internal Server Error");
+  }
+};
+
+export const getQuote = async (symbol: string) => {
+  const symbolUpper = symbol.toUpperCase();
+  const response = await fetch(
+    `https://finnhub.io/api/v1/quote?symbol=${symbolUpper}&token=${process.env.FINNHUB_API_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error(`Finnhub API error: ${response.status}`);
+  }
+  return await response.json();
+};
