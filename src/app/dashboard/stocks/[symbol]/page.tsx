@@ -6,7 +6,7 @@ async function getStockData(symbol: string) {
 
   const stock = await getStockBySymbol(symbol);
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const baseUrl = process.env.VERCEL_URL ?? "http://localhost:3000";
 
   const [timeSeriesResponse, quoteResponse] = await Promise.all([
     fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/time_series`, {
