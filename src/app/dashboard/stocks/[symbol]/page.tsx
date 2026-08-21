@@ -1,64 +1,52 @@
-"use client";
-
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { ChartAreaInteractive } from "@/components/chart-area-interactive";
-import { Button } from "@/components/ui/button";
-import { TimeSeries} from "@/types/stock";
+import { StockDetails } from "./stock-details";
+import { getStockBySymbol } from "@/services/stocks";
 
-export default function StockPage() {
-  const params = useParams();
-  const symbol = params.symbol as string;
+async function getStockData(symbol: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
 
+  const stock = await getStockBySymbol(symbol);
 
-  const [timeseries, setTimeseries] = useState<TimeSeries | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [timeSeriesResponse, quoteResponse] = await Promise.all([
+    fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/time_series`, {
+      cache: "no-store",
+    }),
+    fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/quote`, {
+      cache: "no-store",
+    }),
+  ]);
 
-  useEffect(() => {
-    async function fetchStock() {
-      if (!symbol) return;
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `/api/stocks/${encodeURIComponent(symbol)}`,
-        );
-        const data = await response.json();
+  const [timeseriesData, quoteData] = await Promise.all([
+    timeSeriesResponse.json(),
+    quoteResponse.json(),
+  ]);
 
-        if (!response.ok) {
-          console.error("Failed to load stock:", data.error);
-        }
-        if (response.ok) setTimeseries(data);
+  return { timeseriesData, quoteData, stock };
+}
 
-      } catch (err) {
-        console.error("Failed to load stock:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
+export default async function StockPage({
+  params,
+}: {
+  params: Promise<{ symbol: string }>;
+}) {
+  const { symbol } = await params;
 
-    fetchStock();
-  }, [symbol]);
+  if (!symbol) {
+    return <div>Symbol not provided</div>;
+  }
 
-  if (loading)
-    return <div className="p-10 text-center">Loading stock data...</div>;
-  if (!timeseries)
-    return <div className="p-10 text-center">No stock data available.</div>;
+  const data = await getStockData(symbol);
+
+  if (!data.timeseriesData || !data.quoteData || !data.stock) {
+    return <div>Failed to load stock data for {symbol}.</div>;
+  }
+
+  const { timeseriesData, quoteData, stock } = data;
 
   return (
     <div className="h-full flex-col items-center gap-6 p-6 md:p-10">
-      <ChartAreaInteractive values={timeseries.values} />
-      <h1>
-        {timeseries.meta.symbol}
-      </h1>
-   <p>Price: ${timeseries.values[0].close || 0}</p>
-      <p>Exchange: {timeseries.meta.exchange}</p>
-      
-      <form>
-        <Button size="lg">Buy</Button>
-      </form>
-       <form>
-        <Button size="lg">Sell</Button>
-      </form>
+      <ChartAreaInteractive stock={stock} values={timeseriesData.values} />
+      <StockDetails quote={quoteData} />
     </div>
   );
 }

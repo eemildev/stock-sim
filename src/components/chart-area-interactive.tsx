@@ -23,9 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useMemo, useState } from "react";
-import { Values } from "@/types/stock";
-
-export const description = "An interactive area chart";
+import { Values, Stock} from "@/types/stock";
 
 const chartConfig = {
   close: {
@@ -34,8 +32,14 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ChartAreaInteractive({ values }: { values: Values }) {
-  const [timeRange, setTimeRange] = useState("1M");
+export function ChartAreaInteractive({
+  values,
+  stock,
+}: {
+  values: Values;
+  stock: Stock | undefined;
+}) {
+  const [timeRange, setTimeRange] = useState("6M");
 
   const filteredData = useMemo(() => {
     // API data is newest -> oldest, so reverse it for the chart.
@@ -78,10 +82,8 @@ export function ChartAreaInteractive({ values }: { values: Values }) {
     <Card className="pt-0">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1">
-          <CardTitle>Stock Price</CardTitle>
-          <CardDescription>
-            Closing price for the selected period
-          </CardDescription>
+          <CardTitle>{stock?.name}</CardTitle>
+          <CardDescription>{stock?.exchange}</CardDescription>
         </div>
 
         <Select
@@ -159,7 +161,12 @@ export function ChartAreaInteractive({ values }: { values: Values }) {
               axisLine={false}
               tickMargin={8}
               domain={["dataMin - 5", "dataMax + 5"]}
-              tickFormatter={(value) => value.toLocaleString("en-US", { style: "currency", currency: "USD" })}
+              tickFormatter={(value) =>
+                value.toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                })
+              }
             />
 
             <XAxis

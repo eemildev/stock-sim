@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { stocks } from "@/db/schema";
-import { count, or, ilike } from "drizzle-orm";
+import { count, or, ilike, eq } from "drizzle-orm";
 
 export const getStocks = async (
   searchQuery: string,
@@ -29,5 +29,12 @@ export const getStocks = async (
       .then((res) => res[0].count),
   ]);
 
+ 
   return { data, count: totalCount };
-};
+}; 
+
+export const getStockBySymbol = async (symbol: string) => {
+    return await db.query.stocks.findFirst({
+      where: eq(stocks.symbol, symbol.toUpperCase())
+    });
+  }
