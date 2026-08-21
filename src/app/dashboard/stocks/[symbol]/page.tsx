@@ -6,11 +6,13 @@ async function getStockData(symbol: string) {
 
   const stock = await getStockBySymbol(symbol);
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
   const [timeSeriesResponse, quoteResponse] = await Promise.all([
-    fetch(`/api/stocks/${encodeURIComponent(symbol)}/time_series`, {
+    fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/time_series`, {
       cache: "no-store",
     }),
-    fetch(`/api/stocks/${encodeURIComponent(symbol)}/quote`, {
+    fetch(`${baseUrl}/api/stocks/${encodeURIComponent(symbol)}/quote`, {
       cache: "no-store",
     }),
   ]);

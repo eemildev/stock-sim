@@ -4,7 +4,7 @@ dotenv.config({ path: ".env" });
 import fs from "node:fs";
 
 import { db } from "./src/db";
-import { stocks } from "./src/db/portfolios-schema";
+import { stocks } from "./src/db/stocks-schema";
 
 type TwelveDataStock = {
   symbol: string;

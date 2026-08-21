@@ -1,14 +1,14 @@
-"use client"
+"use client";
 import { Stock } from "@/types/stock";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PaginationIconsOnly } from "@/components/pagination-icons-only";
 import { StockList, StockListSkeleton } from "./stock-list";
 import { getStocks } from "@/services/stocks";
 import { StockSearch } from "./stock-search";
 
-export default function StocksPage() {
+function StocksPageContent() {
   const searchParams = useSearchParams();
 
   const searchQuery = searchParams.get("query") || "";
@@ -36,22 +36,30 @@ export default function StocksPage() {
     fetchStocks();
   }, [searchQuery, currentPage, outputSize]);
 
-return (
-<div className="flex h-full flex-col items-center gap-6 overflow-hidden p-6 md:p-10">
-  <StockSearch results={totalCount} />
-    <ScrollArea className="min-h-0 w-full max-w-2xl flex-1 rounded-md border p-4">
-    {loading ? (
-      <StockListSkeleton />
-    ) : (
-      <StockList stocks={stocks} />
-    )}
-    </ScrollArea>
+  return (
+    <div className="flex h-full flex-col items-center gap-6 overflow-hidden p-6 md:p-10">
+      <StockSearch results={totalCount} />
+      <ScrollArea className="min-h-0 w-full max-w-2xl flex-1 rounded-md border p-4">
+        {loading ? (
+          <StockListSkeleton />
+        ) : (
+          <StockList stocks={stocks} />
+        )}
+      </ScrollArea>
 
-    <PaginationIconsOnly
-      page={currentPage}
-      outputsize={outputSize}
-      totalCount={totalCount}
-    />
-  </div>
-);
+      <PaginationIconsOnly
+        page={currentPage}
+        outputsize={outputSize}
+        totalCount={totalCount}
+      />
+    </div>
+  );
+}
+
+export default function StocksPage() {
+  return (
+    <Suspense fallback={<StockListSkeleton />}>
+      <StocksPageContent />
+    </Suspense>
+  );
 }
