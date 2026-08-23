@@ -7,8 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-export function StockDetails({ quote }: { quote: Quote }) {
+import { StockForm } from "./stock-form";
+export function StockDetails({ quote, stockId}: { quote: Quote, stockId: number }) {
   if (
     !quote.c ||
     !quote.d ||
@@ -26,6 +26,7 @@ export function StockDetails({ quote }: { quote: Quote }) {
       </Card>
     );
   }
+
   return (
     <Card>
       <CardHeader>
@@ -48,20 +49,7 @@ export function StockDetails({ quote }: { quote: Quote }) {
         <CardDescription>Previous close price: {quote.pc}</CardDescription>
       </CardContent>
       <CardFooter>
-        <form action={/* buyAction */ undefined}>
-          <Button size="lg" type="submit">
-            Buy
-          </Button>
-        </form>
-        <form action={/* sellAction */ undefined}>
-          <Button
-            className=" bg-red-500 hover:bg-red-600"
-            size="lg"
-            type="submit"
-          >
-            Sell
-          </Button>
-        </form>
+        <StockForm quote={quote} portfolioId={1} stockId={stockId}/>
       </CardFooter>
     </Card>
   );

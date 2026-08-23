@@ -61,7 +61,13 @@ export async function NavigationBar() {
               <NavigationMenuItem>
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
-                  render={<Link href="/dashboard">Dashboard</Link>}
+                  render={<Link href="/dashboard">Overview</Link>}
+                />
+              </NavigationMenuItem>
+                <NavigationMenuItem>
+                <NavigationMenuLink
+                  className={navigationMenuTriggerStyle()}
+                  render={<Link href="/dashboard/transactions">Transactions</Link>}
                 />
               </NavigationMenuItem>
               <NavigationMenuItem>

@@ -4,21 +4,14 @@ import {
     varchar,
     char,
     text,
-    bigint,
     numeric,
     timestamp,
-    unique,
     index,
-    pgEnum,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { user } from "./auth-schema"; 
-import { stocks } from "./stocks-schema"; 
-
-export const transactionTypeEnum = pgEnum("transaction_type", [
-    "buy",
-    "sell",
-]);
+import { holdings } from "./holdings-schema";
+import { transactions } from "./transactions-schema";
 
 export const portfolios = pgTable("portfolios", {
     id: bigserial("id", { mode: "number" }).primaryKey(),
@@ -48,66 +41,6 @@ export const portfolios = pgTable("portfolios", {
     index("portfolios_user_idx").on(table.userId),
 ]);
 
-export const holdings = pgTable("holdings", {
-    id: bigserial("id", { mode: "number" }).primaryKey(),
-
-    portfolioId: bigint("portfolio_id", { mode: "number" })
-        .notNull()
-        .references(() => portfolios.id, { onDelete: "cascade" }),
-
-    stockId: bigint("stock_id", { mode: "number" })
-        .notNull()
-        .references(() => stocks.id, { onDelete: "restrict" }),
-
-    quantity: numeric("quantity", { precision: 20, scale: 8 })
-        .notNull()
-        .default("0"),
-
-    avgCost: numeric("avg_cost", { precision: 20, scale: 8 })
-        .notNull()
-        .default("0"),
-
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-        .notNull()
-        .defaultNow(),
-}, (table) => [
-    unique("holdings_portfolio_stock_unique").on(
-        table.portfolioId,
-        table.stockId,
-    ),
-    index("holdings_portfolio_idx").on(table.portfolioId),
-]);
-
-export const transactions = pgTable("transactions", {
-    id: bigserial("id", { mode: "number" }).primaryKey(),
-
-    portfolioId: bigint("portfolio_id", { mode: "number" })
-        .notNull()
-        .references(() => portfolios.id, { onDelete: "cascade" }),
-
-    stockId: bigint("stock_id", { mode: "number" })
-        .notNull()
-        .references(() => stocks.id, { onDelete: "restrict" }),
-
-    type: transactionTypeEnum("type").notNull(),
-
-    quantity: numeric("quantity", { precision: 20, scale: 8 }).notNull(),
-
-    price: numeric("price", { precision: 20, scale: 8 }).notNull(),
-
-    fee: numeric("fee", { precision: 20, scale: 8 })
-        .notNull()
-        .default("0"),
-
-    executedAt: timestamp("executed_at", { withTimezone: true })
-        .notNull()
-        .defaultNow(),
-}, (table) => [
-    index("transactions_portfolio_idx").on(table.portfolioId),
-    index("transactions_stock_idx").on(table.stockId),
-    index("transactions_executed_at_idx").on(table.executedAt),
-]);
-
 export const portfolioRelations = relations(portfolios, ({ one, many }) => ({
     user: one(user, {
         fields: [portfolios.userId],
@@ -115,26 +48,4 @@ export const portfolioRelations = relations(portfolios, ({ one, many }) => ({
     }),
     holdings: many(holdings),
     transactions: many(transactions),
-}));
-
-export const holdingRelations = relations(holdings, ({ one }) => ({
-    portfolio: one(portfolios, {
-        fields: [holdings.portfolioId],
-        references: [portfolios.id],
-    }),
-    stock: one(stocks, {
-        fields: [holdings.stockId],
-        references: [stocks.id],
-    }),
-}));
-
-export const transactionRelations = relations(transactions, ({ one }) => ({
-    portfolio: one(portfolios, {
-        fields: [transactions.portfolioId],
-        references: [portfolios.id],
-    }),
-    stock: one(stocks, {
-        fields: [transactions.stockId],
-        references: [stocks.id],
-    }),
 }));
