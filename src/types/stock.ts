@@ -1,18 +1,18 @@
-export type Stock = {
-  id: number;
-  symbol: string;
-  name: string;
-  currency: string | null;
-  exchange: string | null;
-  micCode: string | null;
-  country: string | null;
-  type: string | null;
-  figiCode: string | null;
-  cfiCode: string | null;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+import { stocks } from "@/db/stocks-schema"
+
+export type Stock = typeof stocks.$inferSelect;
+
+import { portfolios } from "@/db/portfolios-schema"
+
+export type Portfolio = typeof portfolios.$inferSelect;
+
+import { holdings } from "@/db/holdings-schema"
+
+export type Holding = typeof holdings.$inferSelect;
+export type PortfolioWithHoldings = Portfolio & {
+  holdings: Holding[];
 };
+
 export type TimeSeries = {
   meta: {
     "symbol": string,

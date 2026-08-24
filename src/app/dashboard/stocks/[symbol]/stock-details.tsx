@@ -3,12 +3,10 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { StockForm } from "./stock-form";
-export function StockDetails({ quote, stockId}: { quote: Quote, stockId: number }) {
+export function StockDetails({ quote}: { quote: Quote, stockId: number }) {
   if (
     !quote.c ||
     !quote.d ||
@@ -30,7 +28,7 @@ export function StockDetails({ quote, stockId}: { quote: Quote, stockId: number 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>${quote.c.toFixed(2)}</CardTitle>
+        <CardTitle>${quote.c}</CardTitle>
       </CardHeader>
       <CardContent>
         <CardDescription
@@ -41,16 +39,13 @@ export function StockDetails({ quote, stockId}: { quote: Quote, stockId: number 
         <CardDescription
           className={quote.dp > 0 ? "text-green-500" : "text-red-500"}
         >
-          Percent Change: {quote.dp.toPrecision(2)}%
+          Percent Change: {quote.dp.toPrecision(3)}%
         </CardDescription>
         <CardDescription>High price of the day: {quote.h}</CardDescription>
         <CardDescription>Low price of the day: {quote.l}</CardDescription>
         <CardDescription>Open price of the day: {quote.o}</CardDescription>
         <CardDescription>Previous close price: {quote.pc}</CardDescription>
       </CardContent>
-      <CardFooter>
-        <StockForm quote={quote} portfolioId={1} stockId={stockId}/>
-      </CardFooter>
     </Card>
   );
 }

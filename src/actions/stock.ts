@@ -4,6 +4,8 @@ import { headers } from "next/headers"
 import { auth } from "@/lib/auth";
 import { buyHolding, sellHolding } from "@/services/holdings";
 import { addTransaction } from "@/services/transactions";
+import { updatePortfolioCashBalance } from "@/services/portfolios";
+import { getQuote } from "@/services/stocks";
 
 
 type BuyStockState = {
@@ -15,11 +17,9 @@ export async function buyStockAction(
     prevState: BuyStockState,
     formData: FormData) {
 
-    // authentication
     const session = await auth.api.getSession({
         headers: await headers(),
     });
-
     if (!session) {
         return {
             success: false,
@@ -30,17 +30,20 @@ export async function buyStockAction(
     const portfolioId = formData.get("portfolioId") as string;
     const stockId = formData.get("stockId") as string;
     const quantity = formData.get("quantity") as string;
-    const price = formData.get("price") as string;
+    const symbol = formData.get("symbol") as string;
+    const quote = await getQuote(symbol);
+    const price = quote.c;
+    const totalCost = Number(quantity) * Number(price);
 
     try {
-        // Add the holding to the database
-        await buyHolding(Number(portfolioId), Number(stockId), quantity, price);
-        // Add the transaction to the database
         await addTransaction(Number(portfolioId), Number(stockId), "buy", quantity, price);
+        await updatePortfolioCashBalance(Number(portfolioId), (Number(totalCost) * -1).toString());
+        await buyHolding(Number(portfolioId), Number(stockId), quantity, price);
 
         return {
             success: true,
         };
+
     } catch (error) {
         if (error instanceof Error) {
             return {
@@ -58,7 +61,7 @@ export async function buyStockAction(
 export async function sellStockAction(
     prevState: BuyStockState,
     formData: FormData) {
-    // authentication
+
     const session = await auth.api.getSession({
         headers: await headers(),
     });
@@ -68,15 +71,18 @@ export async function sellStockAction(
             error: "User not authenticated",
         };
     }
+
     const portfolioId = formData.get("portfolioId") as string;
     const stockId = formData.get("stockId") as string;
     const quantity = formData.get("quantity") as string;
-    const price = formData.get("price") as string;
+    const symbol = formData.get("symbol") as string;
+    const quote = await getQuote(symbol);
+    const price = quote.c;
+    const totalCost = Number(quantity) * Number(price);
 
     try {
-        // Add the transaction to the database
         await addTransaction(Number(portfolioId), Number(stockId), "sell", quantity, price);
-        // Update the holding in the database
+        await updatePortfolioCashBalance(Number(portfolioId), (Number(totalCost)).toString());
         await sellHolding(Number(portfolioId), Number(stockId), quantity);
 
         return {

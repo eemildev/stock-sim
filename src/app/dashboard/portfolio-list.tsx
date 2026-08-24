@@ -1,12 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getPortfoliosByUserId } from "@/services/portfolios";
+import { getPortfolios} from "@/services/portfolios";
 
-type PortfolioListProps = {
-  userId: string;
-};
-
-export async function PortfolioList({ userId }: PortfolioListProps) {
-  const portfolios = await getPortfoliosByUserId(userId);
+export async function PortfolioList() {
+  const portfolios = await getPortfolios();
 
   if (portfolios.length === 0) {
     return (
@@ -21,7 +17,7 @@ export async function PortfolioList({ userId }: PortfolioListProps) {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="flex-col space-y-4">
       {portfolios.map((portfolio) => (
         <Card key={portfolio.id}>
           <CardHeader>

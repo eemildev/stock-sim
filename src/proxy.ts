@@ -6,7 +6,7 @@ export async function proxy(request: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
   const { pathname } = request.nextUrl;
 
-  const isAuthRoute = pathname === "/sign-in" || pathname === "/sign-up";
+  const isAuthRoute = pathname === "/sign-in" || pathname === "/sign-up" || pathname === "/";
 
   if (!session && !isAuthRoute) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
@@ -20,5 +20,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/sign-in", "/sign-up"],
+  matcher: ["/dashboard/:path*", "/sign-in", "/sign-up", "/"],
 };
