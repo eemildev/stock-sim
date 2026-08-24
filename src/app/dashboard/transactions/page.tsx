@@ -1,7 +1,7 @@
 import { getPortfoliosWithTransactions } from "@/services/portfolios";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
+import { Wallet } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -71,11 +71,7 @@ export default async function TransactionsPage() {
                   return (
                     <Item variant="outline" key={transaction.id}>
                       <ItemContent>
-                        <ItemTitle className="flex items-center gap-2">
-                          <Badge variant={buy ? "default" : "destructive"}>
-                            {transaction.type}
-                          </Badge>
-                        </ItemTitle>
+                        <ItemTitle>{transaction.stock.name}</ItemTitle>
                         <ItemDescription>
                           quantity: {quantity.toFixed(0)}
                         </ItemDescription>
@@ -83,10 +79,15 @@ export default async function TransactionsPage() {
                           date: {transaction.executedAt.toLocaleDateString()}
                         </ItemDescription>
                       </ItemContent>
-
+               
+                      
+        
                       <div className="text-right text-sm font-medium tabular-nums">
                         ${(quantity * price).toFixed(2)}
                       </div>
+                        <Badge variant={buy ? "default" : "destructive"}>
+                          {transaction.type}
+                        </Badge>
                     </Item>
                   );
                 })

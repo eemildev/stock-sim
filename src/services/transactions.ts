@@ -12,22 +12,3 @@ export async function getTransactionsByPortfolioId(portfolioId: number) {
         }
     });
 }
-
-export async function addTransaction(
-    portfolioId: number,
-    stockId: number,
-    type: "buy" | "sell",
-    quantity: string,
-    price: string,
-) {
-    return await db
-        .insert(transactions)
-        .values({
-            portfolioId,
-            stockId,
-            type,
-            quantity,
-            price,
-        })
-        .returning();
-}

@@ -1,5 +1,7 @@
-import { drizzle } from "drizzle-orm/neon-http";
-import { neon } from "@neondatabase/serverless";
+import "server-only";
+
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
 import { config } from "dotenv";
 
 import * as stocksSchema from "./stocks-schema";
@@ -10,13 +12,18 @@ import * as transactionsSchema from "./transactions-schema";
 
 config({ path: ".env" });
 
-const sql = neon(process.env.DATABASE_URL!);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL!,
+});
+
 export const db = drizzle({
-    client: sql, schema: {
-        ...stocksSchema,
-        ...authSchema,
-        ...portfoliosSchema,
-        ...holdingsSchema,
-        ...transactionsSchema
-    }, logger: true
+  client: pool,
+  schema: {
+    ...stocksSchema,
+    ...authSchema,
+    ...portfoliosSchema,
+    ...holdingsSchema,
+    ...transactionsSchema,
+  },
+  logger: true,
 });

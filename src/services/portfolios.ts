@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { portfolios } from "@/db/portfolios-schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getAuthenticatedUserId } from "./user";
 
 export async function getPortfolios() {
@@ -25,7 +25,11 @@ export async function getPortfoliosWithTransactions() {
     return await db.query.portfolios.findMany({
         where: eq(portfolios.userId, userId),
         with: {
-            transactions: true,
+            transactions:{
+                with: {
+                    stock: true,
+                }
+            }
         },
     });
 }
@@ -49,30 +53,17 @@ export async function addPortfolio(userId: string, name: string, cashBalance: st
     }).returning();
 }
 
-export async function updatePortfolioCashBalance(portfolioId: number, totalCost: string) {
-    const portfolio = await getPortfolioById(portfolioId); // Ensure the portfolio exists before updating
-
-    if (!portfolio) {
-        throw new Error(`Portfolio with ID ${portfolioId} not found`);
-    }
-
-    const cashBalance = (Number(portfolio.cashBalance) + Number(totalCost)).toString();
-
-    return await db.update(portfolios).set({
-        cashBalance: cashBalance,
-    }).where(
-        eq(portfolios.id, portfolioId)
-    );
-}
-
-export async function getPortfolioForUser(portfolioId: number, userId: string) {
-    const [portfolio] = await db
-        .select()
-        .from(portfolios)
-        .where(eq(portfolios.id, portfolioId));
-
-    if (!portfolio || portfolio.userId !== userId) {
-        return null;
-    }
-    return portfolio;
+export async function deletePortfolio(
+  portfolioId: number,
+  userId: string
+) {
+  return await db
+    .delete(portfolios)
+    .where(
+      and(
+        eq(portfolios.id, portfolioId),
+        eq(portfolios.userId, userId)
+      )
+    )
+    .returning();
 }
