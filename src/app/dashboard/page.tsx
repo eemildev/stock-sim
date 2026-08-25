@@ -2,8 +2,8 @@
 
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers"
-import { PortfolioForm } from "./portfolio-form";
 import { PortfolioList } from "./portfolio-list";
+import { AddPortfolio } from "./add-portfolio";
 
 export default async function Dashboard() {
      const session = await auth.api.getSession({
@@ -16,7 +16,7 @@ export default async function Dashboard() {
   return (
    <div className="flex flex-col items-center justify-center gap-6 p-6 md:p-10">
       <PortfolioList />
-      <PortfolioForm />
+      <AddPortfolio />
    </div>  
   );
 }

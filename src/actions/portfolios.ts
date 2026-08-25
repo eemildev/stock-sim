@@ -12,14 +12,14 @@ export type AddPortfolioState = {
 };
 
 export async function addPortfolioAction(
-    prevState: AddPortfolioState, 
+    prevState: AddPortfolioState,
     formData: FormData
 ) {
 
     const session = await auth.api.getSession({
-    headers: await headers(),
-});
-    
+        headers: await headers(),
+    });
+
     if (!session) {
         return {
             success: false,
@@ -29,6 +29,20 @@ export async function addPortfolioAction(
 
     const name = formData.get("name") as string;
     const cashBalance = formData.get("cashBalance") as string;
+
+    if (!name || !cashBalance) {
+        return {
+            success: false,
+            error: "Name and cash balance are required",
+        };
+    }
+
+    if (isNaN(Number(cashBalance)) || Number(cashBalance) <= 0 || Number(cashBalance) > 100000) {
+        return {
+            success: false,
+            error: "Cash balance must be a positive number",
+        };
+    }
 
     try {
         await addPortfolio(session.user.id, name, cashBalance);

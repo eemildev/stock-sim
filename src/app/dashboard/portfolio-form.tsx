@@ -1,10 +1,18 @@
 "use client";
 
-import { useActionState } from "react";
-
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 
 import {
   addPortfolioAction,
@@ -13,11 +21,28 @@ import {
 
 const initialState: AddPortfolioState = {};
 
-export function PortfolioForm() {
+export function PortfolioForm({
+  setOpen,
+}: {
+  setOpen: (open: boolean) => void;
+}) {
   const [state, formAction, isPending] = useActionState(
     addPortfolioAction,
-    initialState
+    initialState,
   );
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.success) {
+      setOpen(false);
+      toast.success("Portfolio added");
+      router.refresh();
+    }
+
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state, router, setOpen]);
 
   return (
     <form action={formAction} className="space-y-6">
@@ -34,30 +59,26 @@ export function PortfolioForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="cashBalance">Cash balance</Label>
+        <Field>
+          <FieldLabel>Cash balance</FieldLabel>
 
-        <Input
-          id="cashBalance"
-          name="cashBalance"
-          type="number"
-          min="0"
-          step="0.01"
-          placeholder="10000.00"
-          required
-        />
+          <Input
+            id="cashBalance"
+            name="cashBalance"
+            type="number"
+            min="1"
+            max="100000"
+            step="10"
+            defaultValue="100000"
+            required
+          />
+          <FieldDescription>
+            Enter the initial cash balance for the portfolio. Max value is
+            100,000 USD.
+          </FieldDescription>
+          <FieldError>{state.error}</FieldError>
+        </Field>
       </div>
-
-      {state.error && (
-        <p className="text-sm font-medium text-destructive">
-          {state.error}
-        </p>
-      )}
-
-      {state.success && (
-        <p className="text-sm font-medium text-green-600">
-          Portfolio added successfully.
-        </p>
-      )}
 
       <Button type="submit" disabled={isPending} className="w-full">
         {isPending ? "Adding..." : "Add Portfolio"}
