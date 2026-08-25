@@ -33,7 +33,7 @@ export async function executeStockTrade({
   }
 
   await db.transaction(async (tx) => {
-    // Verify that the portfolio belongs to the user
+    // 1. Verify portfolio ownership
     const portfolio = await tx.query.portfolios.findFirst({
       where: and(
         eq(portfolios.id, portfolioId),
@@ -45,18 +45,20 @@ export async function executeStockTrade({
       throw new Error("Portfolio not found");
     }
 
+    const tradeTotal = quantity * price;
+
     if (type === "buy") {
-      // Deduct cash atomically — total computed in SQL to avoid JS float error
+      // 2. Deduct cash atomically
       const updatedPortfolio = await tx
         .update(portfolios)
         .set({
-          cashBalance: sql`${portfolios.cashBalance} - (${quantity} * ${price})`,
+          cashBalance: sql`${portfolios.cashBalance} - ${tradeTotal}::numeric`,
         })
         .where(
           and(
             eq(portfolios.id, portfolioId),
             eq(portfolios.userId, userId),
-            sql`${portfolios.cashBalance} >= (${quantity} * ${price})`
+            sql`${portfolios.cashBalance} >= ${tradeTotal}::numeric`
           )
         )
         .returning({ id: portfolios.id });
@@ -65,9 +67,7 @@ export async function executeStockTrade({
         throw new Error("Insufficient funds");
       }
 
-      // Upsert holding — avoids race where two concurrent buys both see
-      // "no holding" and both insert, splitting the position into two rows.
-      // Requires a unique index on (portfolioId, stockId).
+      // 3. Upsert holding with proper SQL casting
       await tx
         .insert(holdings)
         .values({
@@ -78,36 +78,39 @@ export async function executeStockTrade({
         .onConflictDoUpdate({
           target: [holdings.portfolioId, holdings.stockId],
           set: {
-            quantity: sql`${holdings.quantity} + ${quantity}`,
+            quantity: sql`${holdings.quantity} + ${quantity}::numeric`,
           },
         });
     }
 
     if (type === "sell") {
-      // Make sure user owns enough shares — guard is atomic, no separate read needed
+      // 2. Atomic update holding balance
       const updatedHolding = await tx
         .update(holdings)
         .set({
-          quantity: sql`${holdings.quantity} - ${quantity}`,
+          quantity: sql`${holdings.quantity} - ${quantity}::numeric`,
         })
         .where(
           and(
             eq(holdings.portfolioId, portfolioId),
             eq(holdings.stockId, stockId),
-            sql`${holdings.quantity} >= ${quantity}`
+            sql`${holdings.quantity} >= ${quantity}::numeric`
           )
         )
-        .returning({ id: holdings.id });
+        .returning({ 
+          id: holdings.id, 
+          remainingQty: holdings.quantity 
+        });
 
       if (updatedHolding.length === 0) {
         throw new Error("You don't own enough shares of this stock");
       }
 
-      // Add cash — total computed in SQL to avoid JS float error
+      // 3. Add cash to balance
       await tx
         .update(portfolios)
         .set({
-          cashBalance: sql`${portfolios.cashBalance} + (${quantity} * ${price})`,
+          cashBalance: sql`${portfolios.cashBalance} + ${tradeTotal}::numeric`,
         })
         .where(
           and(
@@ -116,19 +119,15 @@ export async function executeStockTrade({
           )
         );
 
-      // Clean up zero-quantity holdings so they don't clutter reads
-      await tx
-        .delete(holdings)
-        .where(
-          and(
-            eq(holdings.portfolioId, portfolioId),
-            eq(holdings.stockId, stockId),
-            sql`${holdings.quantity} = 0`
-          )
-        );
+      // 4. Safely purge empty holding row if fully liquidated
+      if (Number(updatedHolding[0].remainingQty) === 0) {
+        await tx
+          .delete(holdings)
+          .where(eq(holdings.id, updatedHolding[0].id));
+      }
     }
 
-    // Record transaction
+    // 4. Record transaction log
     await tx.insert(transactions).values({
       portfolioId,
       stockId,
