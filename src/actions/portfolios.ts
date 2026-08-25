@@ -37,10 +37,10 @@ export async function addPortfolioAction(
         };
     }
 
-    if (isNaN(Number(cashBalance)) || Number(cashBalance) <= 0 || Number(cashBalance) > 100000) {
+    if (isNaN(Number(cashBalance)) || Number(cashBalance) < 1000 || Number(cashBalance) > 100000) {
         return {
             success: false,
-            error: "Cash balance must be a positive number",
+            error: "Cash balance must be a number between 1,000 and 100,000",
         };
     }
 

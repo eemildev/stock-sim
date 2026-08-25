@@ -44,7 +44,7 @@ export function StockCheckout({
   }
 
   const triggerLabel = mode === "buy" ? "Buy Stock" : "Sell Stock";
-  const triggerVariant = mode === "sell" ? "destructive" : "default";
+  const triggerClassName = mode === "buy" ? "w-[50%]" : "w-[50%] bg-red-500 hover:bg-red-600";
 
   const checkOutMode = (
     <>
@@ -65,26 +65,24 @@ export function StockCheckout({
       )}
     </>
   );
-  const header = (
-    <>
-      <DialogTitle>{stock.name}</DialogTitle>
-      <DialogTitle>${quote.c}</DialogTitle>
-      <DialogDescription
-        className={quote.dp > 0 ? "text-green-500" : "text-red-500"}
-      >
-        {quote.dp.toPrecision(3)}%
-      </DialogDescription>
-    </>
-  );
 
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
-          render={<Button variant={triggerVariant}>{triggerLabel}</Button>}
+          render={<Button className={triggerClassName}>{triggerLabel}</Button>}
         />
         <DialogContent className="sm:max-w-106.25">
-          <DialogHeader>{header}</DialogHeader>
+          <DialogHeader>
+            {" "}
+            <DialogTitle>{stock.name}</DialogTitle>
+            <DialogTitle>${quote.c}</DialogTitle>
+            <DialogDescription
+              className={quote.dp > 0 ? "text-green-500" : "text-red-500"}
+            >
+              {quote.dp.toPrecision(3)}%
+            </DialogDescription>
+          </DialogHeader>
           {checkOutMode}
         </DialogContent>
       </Dialog>
@@ -94,7 +92,7 @@ export function StockCheckout({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger
-        render={<Button variant={triggerVariant}>{triggerLabel}</Button>}
+        render={<Button className={triggerClassName}>{triggerLabel}</Button>}
       />
       <DrawerContent>
         <DrawerHeader className="text-left">

@@ -10,7 +10,6 @@ import {
   Field,
   FieldDescription,
   FieldError,
-  FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 
@@ -48,7 +47,6 @@ export function PortfolioForm({
     <form action={formAction} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="name">Portfolio name</Label>
-
         <Input
           id="name"
           name="name"
@@ -57,24 +55,21 @@ export function PortfolioForm({
           required
         />
       </div>
-
       <div className="space-y-2">
         <Field>
           <FieldLabel>Cash balance</FieldLabel>
-
           <Input
             id="cashBalance"
             name="cashBalance"
             type="number"
-            min="1"
+            min="1000"
             max="100000"
-            step="10"
+            step="1"
             defaultValue="100000"
             required
           />
           <FieldDescription>
-            Enter the initial cash balance for the portfolio. Max value is
-            100,000 USD.
+            Enter the initial cash balance for the portfolio.
           </FieldDescription>
           <FieldError>{state.error}</FieldError>
         </Field>
