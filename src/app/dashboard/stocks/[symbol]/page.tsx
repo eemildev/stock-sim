@@ -3,6 +3,8 @@ import { StockDetails } from "./stock-details";
 import { getQuote, getStockBySymbol, getTimeSeries } from "@/services/stocks";
 import { getPortfoliosWithHoldings } from "@/services/portfolios";
 import { StockCheckout } from "./stock-checkout";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers"
 
 async function getStockData(symbol: string) {
   const [stock, timeseriesData, quoteData] = await Promise.all([
@@ -18,6 +20,14 @@ export default async function StockPage({
 }: {
   params: Promise<{ symbol: string }>;
 }) {
+     const session = await auth.api.getSession({
+       headers: await headers(),
+     });
+    
+    if(!session) {
+        return <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">Not authenticated</div>
+    }
+    
   const { symbol } = await params;
 
   if (!symbol) {
@@ -32,7 +42,7 @@ export default async function StockPage({
 
   const { timeseriesData, quoteData, stock } = data;
 
-  const portfolios = await getPortfoliosWithHoldings();
+  const portfolios = await getPortfoliosWithHoldings(session.user.id);
 
   return (
     <div className="h-full flex-col items-center gap-6 p-6 md:p-10">

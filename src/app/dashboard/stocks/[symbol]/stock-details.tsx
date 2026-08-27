@@ -1,4 +1,4 @@
-import { Quote } from "@/types/stock";
+import { Quote } from "@/types/stocks";
 import {
   Card,
   CardContent,

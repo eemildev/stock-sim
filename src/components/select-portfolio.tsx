@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -8,20 +10,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FieldLabel, Field } from "./ui/field";
-import { PortfolioWithHoldings, Stock } from "@/types/stock";
+import { Stock } from "@/types/stocks";
+import { PortfolioWithHoldings, Portfolio } from "@/types/portfolios";
+
 
 export function SelectPortfolio({
   portfolios,
   stock,
+  selectedPortfolioId,
+  handlePortfolioChange,
 }: {
-  portfolios: PortfolioWithHoldings[];
-  stock: Stock | undefined;
+  portfolios: Portfolio[] | PortfolioWithHoldings[];
+  stock?: Stock | undefined;
+  selectedPortfolioId?: string;
+  handlePortfolioChange?: (portfolioId: string | null) => void;
 }) {
   function getOwnedQuantity(
-    portfolio: PortfolioWithHoldings,
+    portfolio: Portfolio | PortfolioWithHoldings,
     stockId?: string | null | number,
   ): number {
-    if (!stockId) return 0;
+    if (!stockId || !("holdings" in portfolio)) return 0;
+
     return portfolio.holdings
       .filter((h) => String(h.stockId) === String(stockId))
       .reduce((sum, h) => sum + Number(h.quantity), 0);
@@ -49,13 +58,21 @@ export function SelectPortfolio({
     <div className="space-y-2">
       <Field>
         <FieldLabel>Portfolio</FieldLabel>
-        <Select name="portfolioId" required items={items}>
+
+        <Select
+          name="portfolioId"
+          value={selectedPortfolioId}
+          onValueChange={handlePortfolioChange}
+          items={items}
+        >
           <SelectTrigger className="w-full min-h-12.5 py-2.5 text-left">
             <SelectValue placeholder="Select a portfolio" />
           </SelectTrigger>
+
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Portfolios</SelectLabel>
+
               {items.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}

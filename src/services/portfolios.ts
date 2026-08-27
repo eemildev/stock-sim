@@ -3,10 +3,8 @@
 import { db } from "@/db";
 import { portfolios } from "@/db/portfolios-schema";
 import { and, eq } from "drizzle-orm";
-import { getAuthenticatedUserId } from "./user";
 
-export async function getPortfolios() {
-    const userId = await getAuthenticatedUserId();
+export async function getPortfolios(userId: string) {
 
     return await db.query.portfolios.findMany({
         where: eq(portfolios.userId, userId),
@@ -19,8 +17,7 @@ export async function getPortfolioById(portfolioId: number) {
     });
 }
 
-export async function getPortfoliosWithTransactions() {
-    const userId = await getAuthenticatedUserId();
+export async function getPortfoliosWithTransactions(userId: string) {
 
     return await db.query.portfolios.findMany({
         where: eq(portfolios.userId, userId),
@@ -34,8 +31,7 @@ export async function getPortfoliosWithTransactions() {
     });
 }
 
-export async function getPortfoliosWithHoldings() {
-    const userId = await getAuthenticatedUserId();
+export async function getPortfoliosWithHoldings(userId: string) {
 
     return await db.query.portfolios.findMany({
         where: eq(portfolios.userId, userId),

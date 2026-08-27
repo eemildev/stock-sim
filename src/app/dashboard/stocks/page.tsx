@@ -1,5 +1,5 @@
 "use client";
-import { Stock } from "@/types/stock";
+import { Stock } from "@/types/stocks";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";

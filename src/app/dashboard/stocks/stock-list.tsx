@@ -5,7 +5,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Stock } from "@/types/stock";
+import { Stock } from "@/types/stocks";
 import Link from "next/link";
 
 export function StockListSkeleton({ count = 25 }: { count?: number }) {

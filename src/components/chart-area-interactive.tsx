@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useMemo, useState } from "react";
-import { Values, Stock} from "@/types/stock";
+import { Values, Stock} from "@/types/stocks";
 
 const chartConfig = {
   close: {

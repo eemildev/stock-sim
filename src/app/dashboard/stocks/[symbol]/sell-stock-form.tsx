@@ -3,11 +3,12 @@
 import { sellStockAction } from "@/actions/trade";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Quote } from "@/types/stock";
+import { Quote } from "@/types/stocks";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Stock, PortfolioWithHoldings } from "@/types/stock";
+import { Stock } from "@/types/stocks";
+import { PortfolioWithHoldings } from "@/types/portfolios";
 import { FieldLabel, Field } from "@/components/ui/field";
 import { SelectPortfolio } from "@/components/select-portfolio";
 

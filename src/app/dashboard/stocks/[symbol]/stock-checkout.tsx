@@ -21,7 +21,8 @@ import {
 } from "@/components/ui/drawer";
 import { BuyStockForm } from "./buy-stock-form";
 import { SellStockForm } from "./sell-stock-form";
-import { Quote, Stock, PortfolioWithHoldings } from "@/types/stock";
+import { Quote, Stock } from "@/types/stocks";
+import { PortfolioWithHoldings } from "@/types/portfolios";
 
 type TransactionMode = "buy" | "sell";
 
