@@ -26,7 +26,7 @@ export default async function Dashboard({
   const { portfolioId } = await searchParams;
   const portfolios = await getPortfolios(session.user.id);
   const selectedPortfolioId = Number(portfolioId) || portfolios[0]?.id;
-  const transactions = await getTransactionsByPortfolioId(selectedPortfolioId);
+  const transactions = await getTransactionsByPortfolioId(selectedPortfolioId, session.user.id);
 
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-6 p-6 md:p-10">
