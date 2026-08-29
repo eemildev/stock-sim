@@ -1,12 +1,15 @@
-import { Quote } from "@/types/stocks";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-export function StockDetails({ quote}: { quote: Quote, stockId: number }) {
+import { StockCheckout } from "@/app/dashboard/stocks/[symbol]/stock-checkout";
+import { Quote, Stock } from "@/types/stocks";
+import { PortfolioWithHoldings } from "@/types/portfolios";
+export function StockDetails({ quote, stock, portfolios }: { quote: Quote, stockId: number, stock: Stock, portfolios: PortfolioWithHoldings[] }) {
   if (
     !quote.c ||
     !quote.d ||
@@ -46,6 +49,20 @@ export function StockDetails({ quote}: { quote: Quote, stockId: number }) {
         <CardDescription>Open price of the day: {quote.o}</CardDescription>
         <CardDescription>Previous close price: {quote.pc}</CardDescription>
       </CardContent>
+      <CardFooter>
+          <StockCheckout
+                  quote={quote}
+                  stock={stock}
+                  portfolios={portfolios}
+                  mode="buy"
+                />
+                <StockCheckout
+                  quote={quote}
+                  stock={stock}
+                  portfolios={portfolios}
+                  mode="sell"
+                />
+      </CardFooter>
     </Card>
   );
 }

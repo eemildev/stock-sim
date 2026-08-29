@@ -2,7 +2,6 @@ import { ChartAreaInteractive } from "@/components/chart-area-interactive";
 import { StockDetails } from "./stock-details";
 import { getQuote, getStockBySymbol, getTimeSeries } from "@/services/stocks";
 import { getPortfoliosWithHoldings } from "@/services/portfolios";
-import { StockCheckout } from "./stock-checkout";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
@@ -51,21 +50,7 @@ export default async function StockPage({
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-6 p-6 md:p-10">
       <ChartAreaInteractive stock={stock} values={timeseriesData.values} />
-      <StockDetails quote={quoteData} stockId={stock.id} />
-      <div>
-        <StockCheckout
-          quote={quoteData}
-          stock={stock}
-          portfolios={portfolios}
-          mode="buy"
-        />
-        <StockCheckout
-          quote={quoteData}
-          stock={stock}
-          portfolios={portfolios}
-          mode="sell"
-        />
-      </div>
+      <StockDetails quote={quoteData} stockId={stock.id} stock={stock} portfolios={portfolios} />
     </div>
   );
 }
