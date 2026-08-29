@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Label } from "@/components/ui/label";
 
 export function TransactionsTable({
   transactions,
@@ -15,6 +16,8 @@ export function TransactionsTable({
   transactions: Transaction[];
 }) {
   return (
+     <div>
+    <Label className="text-lg font-semibold">Your Transactions</Label>
     <Table>
       <TableCaption>A list of your transactions</TableCaption>
       <TableHeader>
@@ -42,5 +45,6 @@ export function TransactionsTable({
         ))}
       </TableBody>
     </Table>
+    </div>
   );
 }

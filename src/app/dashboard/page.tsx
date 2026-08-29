@@ -8,6 +8,8 @@ import { getHoldingsByPortfolioId } from "@/services/holdings";
 import { getQuote } from "@/services/stocks";
 import { FilterPortfolio } from "@/components/filter-portfolio";
 import { HoldingsTable } from "./holdings-table";
+import { getTransactionsByPortfolioId } from "@/services/transactions";
+import { HoldingItem } from "./holding-item";
 
 export default async function Dashboard({
   searchParams,
@@ -28,7 +30,22 @@ export default async function Dashboard({
   const { portfolioId } = await searchParams;
   const portfolios = await getPortfolios(session.user.id);
   const selectedPortfolioId = Number(portfolioId) || portfolios[0]?.id;
-  const holdings = await getHoldingsByPortfolioId(selectedPortfolioId, session.user.id);
+  const holdings = await getHoldingsByPortfolioId(
+    selectedPortfolioId,
+    session.user.id,
+  );
+  const transactions = await getTransactionsByPortfolioId(
+    selectedPortfolioId,
+    session.user.id,
+  );
+
+  const transactionsValue = transactions.reduce((acc, transaction) => {
+    if (transaction.type === "sell") {
+      return acc - Number(transaction.quantity) * Number(transaction.price);
+    } else {
+      return acc + Number(transaction.quantity) * Number(transaction.price);
+    }
+  }, 0);
 
   const holdingsWithQuotes = await Promise.all(
     holdings.map(async (holding) => ({
@@ -37,11 +54,30 @@ export default async function Dashboard({
     })),
   );
 
+  const holdingsValue = holdingsWithQuotes.reduce((acc, { holding, quote }) => {
+    return acc + Number(holding.quantity) * Number(quote.c);
+  }, 0);
+
+  const profit = holdingsValue - transactionsValue;
+  const percentage = !isNaN(transactionsValue) && transactionsValue !== 0 ? (profit / transactionsValue) * 100 : 0;
+
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-6 p-6 md:p-10">
       <FilterPortfolio portfolios={portfolios} />
       <AddPortfolio />
-      <HoldingsTable holdingsWithQuotes={holdingsWithQuotes} />
+      <HoldingItem
+        holdingsValue={holdingsValue}
+        profit={profit}
+        percentage={percentage}
+      />
+      
+      <HoldingsTable
+        holdingsWithQuotes={holdingsWithQuotes}
+        holdingsValue={holdingsValue}
+        transactions={transactions}
+        percentage={percentage}
+      />
+      
     </div>
   );
 }
