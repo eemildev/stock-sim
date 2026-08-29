@@ -68,10 +68,19 @@ export function SellStockForm({
         </Field>
         <Field>
           <FieldLabel htmlFor="Sum">Sum</FieldLabel>
-          <Input id="sum" readOnly={true} value={Number(quote.c) * quantity} />
+          <Input
+            id="sum"
+            readOnly={true}
+            value={`$${Number(quote.c) * quantity}`}
+          />
         </Field>
       </div>
-      <Button type="submit" disabled={pending} className="w-full bg-red-500 hover:bg-red-600">
+      <Button
+        variant="destructive"
+        type="submit"
+        disabled={pending}
+        className="w-full"
+      >
         {pending ? "Selling..." : "Sell"}
       </Button>
     </form>

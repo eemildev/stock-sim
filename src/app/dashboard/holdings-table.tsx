@@ -28,7 +28,10 @@ export function HoldingsTable({
   holdingsValue: number;
   percentage: number;
 }) {
-  function calculateProfitPercentage(holding: HoldingWithStock, quote: Quote): number {
+  function calculateProfitPercentage(
+    holding: HoldingWithStock,
+    quote: Quote,
+  ): number {
     const transactionsForStock = transactions.filter(
       (transaction) => transaction.stockId === holding.stockId,
     );
@@ -49,53 +52,64 @@ export function HoldingsTable({
 
   return (
     <div>
-    <Label className="text-lg font-semibold">Your Holdings</Label>
-    <Table>
-      <TableCaption>A list of your holdings</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Value</TableHead>
-          <TableHead>Stock</TableHead>
-          <TableHead>Profit</TableHead>
-          <TableHead>Quantity</TableHead>
-          <TableHead className="text-right">Price</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {holdingsWithQuotes.map(({ holding, quote }) => (
-          <TableRow key={holding.id}>
-            <TableCell className="font-medium">
-              ${(Number(holding.quantity) * quote?.c).toFixed(2)}
-            </TableCell>
-
-            <TableCell>{holding.stock.name}</TableCell>
-
-            <TableCell className={ calculateProfitPercentage(holding, quote) < 0 ? "text-red-500" : "text-green-500" }>
-              {calculateProfitPercentage(holding, quote).toFixed(2)}%
-            </TableCell>
-
-            <TableCell>{Number(holding.quantity).toFixed(0)}</TableCell>
-
-            <TableCell className="text-right">${quote?.c}</TableCell>
+      <Label className="text-lg font-semibold">Your Holdings</Label>
+      <Table>
+        <TableCaption>A list of your holdings</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Value</TableHead>
+            <TableHead>Stock</TableHead>
+            <TableHead>Profit</TableHead>
+            <TableHead>Quantity</TableHead>
+            <TableHead className="text-right">Price</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell>${holdingsValue.toFixed(2)}</TableCell>
+        </TableHeader>
+        <TableBody>
+          {holdingsWithQuotes.map(({ holding, quote }) => {
+            const profitPercentage = calculateProfitPercentage(holding, quote);
+            return (
+              <TableRow key={holding.id}>
+                <TableCell className="font-medium">
+                  ${(Number(holding.quantity) * quote?.c).toFixed(2)}
+                </TableCell>
 
-          <TableCell />
+                <TableCell>{holding.stock.name}</TableCell>
 
-          <TableCell className={ percentage < 0 ? "text-red-500" : "text-green-500" }>
-            {percentage.toFixed(2)}%
-          </TableCell>
+                <TableCell
+                  className={
+                    profitPercentage < 0 ? "text-red-500" : "text-green-500"
+                  }
+                >
+                  {profitPercentage > 0 ? "+" : ""}
+                  {profitPercentage.toFixed(2)}%
+                </TableCell>
 
-          <TableCell />
+                <TableCell>{Number(holding.quantity).toFixed(0)}</TableCell>
 
-          <TableCell className="text-right">Total</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+                <TableCell className="text-right">${quote?.c}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell>${holdingsValue.toFixed(2)}</TableCell>
+
+            <TableCell />
+
+            <TableCell
+              className={percentage < 0 ? "text-red-500" : "text-green-500"}
+            >
+              {percentage > 0 ? "+" : ""}
+              {percentage.toFixed(2)}%
+            </TableCell>
+
+            <TableCell />
+
+            <TableCell className="text-right">Total</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
     </div>
   );
 }

@@ -45,7 +45,7 @@ export function BuyStockForm({
   const [quantity, setQuantity] = useState(0);
 
   return (
-        <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-4">
       <input type="hidden" name="stockId" value={stock.id} />
       <input type="hidden" name="price" value={quote.c} />
       <input type="hidden" name="symbol" value={stock.symbol} />
@@ -68,7 +68,11 @@ export function BuyStockForm({
         </Field>
         <Field>
           <FieldLabel htmlFor="Sum">Sum</FieldLabel>
-          <Input id="sum" readOnly={true} value={Number(quote.c) * quantity} />
+          <Input
+            id="sum"
+            readOnly={true}
+            value={`$${Number(quote.c) * quantity}`}
+          />
         </Field>
       </div>
       <Button type="submit" disabled={pending} className="w-full">

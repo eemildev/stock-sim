@@ -45,7 +45,7 @@ export function StockCheckout({
   }
 
   const triggerLabel = mode === "buy" ? "Buy Stock" : "Sell Stock";
-  const triggerClassName = mode === "buy" ? "w-[50%]" : "w-[50%] bg-red-500 hover:bg-red-600";
+  const triggerVariant = mode === "buy" ? "default" : "destructive";
 
   const checkOutMode = (
     <>
@@ -71,7 +71,7 @@ export function StockCheckout({
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger
-          render={<Button className={triggerClassName}>{triggerLabel}</Button>}
+          render={<Button variant={triggerVariant} className="w-[50%]">{triggerLabel}</Button>}
         />
         <DialogContent className="sm:max-w-106.25">
           <DialogHeader>
@@ -93,7 +93,7 @@ export function StockCheckout({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger
-        render={<Button className={triggerClassName}>{triggerLabel}</Button>}
+        render={<Button variant={triggerVariant} className="w-[50%]">{triggerLabel}</Button>}
       />
       <DrawerContent>
         <DrawerHeader className="text-left">
