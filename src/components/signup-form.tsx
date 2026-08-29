@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { signUpAction } from "@/actions/user";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Card,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { handleGoogleAuth } from "@/lib/handle-google-auth";
 
 const initialState = {
   errors: {
@@ -53,13 +53,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
   }, [state, router]);
 
-  const handleGoogleAuth = async () => {
-		await authClient.signIn.social({
-			provider: "google",
-			// Optional: redirect new users to a specific page
-			callbackURL: "/dashboard"
-		})
-	}
+  const [name, setName] = useState(initialState.values.name);
+  const [email, setEmail] = useState(initialState.values.email);
 
   return (
     <Card {...props}>
@@ -79,7 +74,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 name="name"
                 type="text"
                 placeholder="John Doe"
-                defaultValue={state.values?.name ?? ""}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 aria-invalid={!!state.errors?.name || !!state.errors?.form}
                 required
               />
@@ -93,7 +89,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 id="email"
                 name="email"
                 type="email"
-                defaultValue={state.values?.email ?? ""}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="m@example.com"
                 aria-invalid={!!state.errors?.email || !!state.errors?.form}
                 required
@@ -104,7 +101,13 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
             </Field>
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input id="password" name="password" type="password" required aria-invalid={!!state.errors?.password || !!state.errors?.form}/>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                aria-invalid={!!state.errors?.password || !!state.errors?.form}
+              />
               <FieldDescription>
                 Must be at least 8 characters long.
               </FieldDescription>
@@ -141,7 +144,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   disabled={pending}
                   variant="outline"
                   type="button"
-                  onClick={()=>handleGoogleAuth()}
+                  onClick={() => handleGoogleAuth()}
                 >
                   Sign up with Google
                 </Button>

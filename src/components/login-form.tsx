@@ -4,7 +4,6 @@ import { toast } from "sonner"
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
 import {
   Card,
   CardContent,
@@ -24,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { signInAction } from "@/actions/user";
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { handleGoogleAuth } from "@/lib/handle-google-auth";
 
 const initialState = {
   errors: {
@@ -51,14 +51,6 @@ export function LoginForm({
       router.refresh();
     }
   }, [state, router]);
-
-    const handleGoogleAuth = async () => {
-      await authClient.signIn.social({
-        provider: "google",
-        // Optional: redirect new users to a specific page
-        callbackURL: "/dashboard"
-      })
-    }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
