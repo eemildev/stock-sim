@@ -14,11 +14,18 @@ export function HoldingsItem({
   profit: number;
   percentage: number;
 }) {
+  const profitPrefix = profit > 0 ? "+" : "-";
+  function slice(profit: number): string {
+    const profitString = profit.toFixed(2);
+    return profitString.startsWith("-") ? profitString.slice(1) : profitString;
+  }
   return (
     <div className="flex w-full flex-col gap-6">
       <Item variant="outline" role="listitem">
         <ItemContent>
-          <ItemTitle className="line-clamp-1">Portfolio holdings value</ItemTitle>
+          <ItemTitle className="line-clamp-1">
+            Portfolio holdings value
+          </ItemTitle>
           <ItemDescription className="text-2xl">
             {" "}
             ${holdingsValue.toFixed(0)}
@@ -30,7 +37,8 @@ export function HoldingsItem({
               percentage < 0 ? "text-xl text-red-500" : "text-xl text-green-500"
             }
           >
-            {profit > 0 ? "+" : ""}{percentage.toFixed(2)}% (${profit.toFixed(2)})
+            {profitPrefix}
+            {slice(percentage)}% ({profitPrefix}${slice(profit)})
           </ItemDescription>
         </ItemContent>
       </Item>
