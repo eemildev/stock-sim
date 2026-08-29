@@ -1,9 +1,11 @@
 "use client";
 
+import * as React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -22,13 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useMemo, useState } from "react";
-import { Values, Stock} from "@/types/stocks";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+import { Values, Stock } from "@/types/stocks";
 
 const chartConfig = {
   close: {
     label: "Close",
-    color: "var(--chart-1)",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig;
 
@@ -39,38 +42,37 @@ export function ChartAreaInteractive({
   values: Values;
   stock: Stock | undefined;
 }) {
-  const [timeRange, setTimeRange] = useState("6M");
+  const [timeRange, setTimeRange] = React.useState("6M");
 
-  const filteredData = useMemo(() => {
-    // API data is newest -> oldest, so reverse it for the chart.
+  const filteredData = React.useMemo(() => {
+    // API data is newest -> oldest, so sort it chronologically.
     const data = [...values].sort(
       (a, b) => new Date(a.datetime).getTime() - new Date(b.datetime).getTime(),
     );
 
-    const referenceDate = new Date(
-      data[data.length - 1]?.datetime ?? new Date(),
-    );
-
-    let daysToSubtract = 30;
-
-    if (timeRange === "1Y") {
-      daysToSubtract = 365;
-    } else if (timeRange === "YTD") {
-      const startOfYear = new Date(referenceDate.getFullYear(), 0, 1);
-      daysToSubtract = Math.floor(
-        (referenceDate.getTime() - startOfYear.getTime()) /
-          (1000 * 60 * 60 * 24),
-      );
-    } else if (timeRange === "6M") {
-      daysToSubtract = 182; // Approximate number of days in 6 months
-    } else if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
+    if (!data.length) {
+      return [];
     }
 
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
+    const referenceDate = new Date(data[data.length - 1].datetime);
+
+    let startDate: Date;
+
+    if (timeRange === "1Y") {
+      startDate = new Date(referenceDate);
+      startDate.setFullYear(startDate.getFullYear() - 1);
+    } else if (timeRange === "YTD") {
+      startDate = new Date(referenceDate.getFullYear(), 0, 1);
+    } else if (timeRange === "6M") {
+      startDate = new Date(referenceDate);
+      startDate.setMonth(startDate.getMonth() - 6);
+    } else if (timeRange === "30d") {
+      startDate = new Date(referenceDate);
+      startDate.setDate(startDate.getDate() - 30);
+    } else {
+      startDate = new Date(referenceDate);
+      startDate.setDate(startDate.getDate() - 7);
+    }
 
     return data.filter((item) => {
       const date = new Date(item.datetime);
@@ -79,50 +81,85 @@ export function ChartAreaInteractive({
   }, [timeRange, values]);
 
   return (
-    <Card className="pt-0">
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+    <Card className="@container/card">
+      <CardHeader>
         <div className="grid flex-1 gap-1">
-          <CardTitle>{stock?.name}</CardTitle>
-          <CardDescription>{stock?.exchange}</CardDescription>
+          <CardTitle>{stock?.name ?? "Stock"}</CardTitle>
+
+          <CardDescription>
+            <span className="hidden @[540px]/card:block">
+              {stock?.exchange ?? "Stock price"} · {timeRange}
+            </span>
+
+            <span className="@[540px]/card:hidden">
+              {stock?.exchange ?? "Stock price"}
+            </span>
+          </CardDescription>
         </div>
 
-        <Select
-          value={timeRange}
-          onValueChange={(value) => {
-            if (value !== null) {
-              setTimeRange(value);
-            }
-          }}
-        >
-          <SelectTrigger
-            className="hidden w-40 rounded-lg sm:ml-auto sm:flex"
-            aria-label="Select time range"
+        <CardAction>
+          {/* Desktop */}
+          <ToggleGroup
+            value={[timeRange]}
+            onValueChange={(value) => {
+              if (value.length > 0) {
+                setTimeRange(value[0]);
+              }
+            }}
+            variant="outline"
+            className="hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex"
           >
-            <SelectValue />
-          </SelectTrigger>
+            <ToggleGroupItem value="1Y">1Y</ToggleGroupItem>
 
-          <SelectContent className="rounded-xl">
-            <SelectItem value="1Y" className="rounded-lg">
-              1Y
-            </SelectItem>
+            <ToggleGroupItem value="YTD">YTD</ToggleGroupItem>
 
-            <SelectItem value="YTD" className="rounded-lg">
-              YTD
-            </SelectItem>
+            <ToggleGroupItem value="6M">6M</ToggleGroupItem>
 
-            <SelectItem value="6M" className="rounded-lg">
-              6M
-            </SelectItem>
+            <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
 
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
-            </SelectItem>
+            <ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
+          </ToggleGroup>
 
-            <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
-            </SelectItem>
-          </SelectContent>
-        </Select>
+          {/* Mobile */}
+          <Select
+            value={timeRange}
+            onValueChange={(value) => {
+              if (value) {
+                setTimeRange(value);
+              }
+            }}
+          >
+            <SelectTrigger
+              className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
+              size="sm"
+              aria-label="Select time range"
+            >
+              <SelectValue placeholder="6 months" />
+            </SelectTrigger>
+
+            <SelectContent className="rounded-xl">
+              <SelectItem value="1Y" className="rounded-lg">
+                1 year
+              </SelectItem>
+
+              <SelectItem value="YTD" className="rounded-lg">
+                Year to date
+              </SelectItem>
+
+              <SelectItem value="6M" className="rounded-lg">
+                6 months
+              </SelectItem>
+
+              <SelectItem value="30d" className="rounded-lg">
+                Last 30 days
+              </SelectItem>
+
+              <SelectItem value="7d" className="rounded-lg">
+                Last 7 days
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </CardAction>
       </CardHeader>
 
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
@@ -146,10 +183,11 @@ export function ChartAreaInteractive({
                   stopColor="var(--color-close)"
                   stopOpacity={0.8}
                 />
+
                 <stop
                   offset="95%"
                   stopColor="var(--color-close)"
-                  stopOpacity={0.05}
+                  stopOpacity={0.1}
                 />
               </linearGradient>
             </defs>
@@ -206,7 +244,7 @@ export function ChartAreaInteractive({
 
             <Area
               dataKey="close"
-              type="monotone"
+              type="natural"
               fill="url(#fillClose)"
               stroke="var(--color-close)"
               strokeWidth={2}

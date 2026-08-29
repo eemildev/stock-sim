@@ -23,7 +23,11 @@ function StocksPageContent() {
     async function fetchStocks() {
       setLoading(true);
       try {
-        const { data, count } = await getStocks(searchQuery, currentPage, outputSize);
+        const { data, count } = await getStocks(
+          searchQuery,
+          currentPage,
+          outputSize,
+        );
         setStocks(data);
         setTotalCount(count);
       } catch (error) {
@@ -37,16 +41,11 @@ function StocksPageContent() {
   }, [searchQuery, currentPage, outputSize]);
 
   return (
-    <div className="flex h-full flex-col items-center gap-6 overflow-hidden p-6 md:p-10">
+    <div className="mx-auto flex h-full w-full max-w-2xl flex-col gap-6 p-6 md:p-10">
       <StockSearch results={totalCount} />
-      <ScrollArea className="min-h-0 w-full max-w-2xl flex-1 rounded-md border p-4">
-        {loading ? (
-          <StockListSkeleton />
-        ) : (
-          <StockList stocks={stocks} />
-        )}
+      <ScrollArea className="min-h-0 w-full flex-1 rounded-md border p-4">
+        {loading ? <StockListSkeleton /> : <StockList stocks={stocks} />}
       </ScrollArea>
-
       <PaginationIconsOnly
         page={currentPage}
         outputsize={outputSize}

@@ -32,7 +32,7 @@ export function StockSearch({ results }: StockSearchProps) {
   }
 
   return (
-    <InputGroup className="max-w-xs">
+    <InputGroup className="w-full">
       <InputGroupInput
         placeholder="Search..."
         onChange={(e) => {

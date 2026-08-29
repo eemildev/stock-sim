@@ -105,7 +105,9 @@ export function StockCheckout({
             {quote.dp.toPrecision(3)}%
           </DrawerDescription>
         </DrawerHeader>
-        {checkOutMode}
+        <div className="p-4">
+           {checkOutMode}
+        </div>
       </DrawerContent>
     </Drawer>
   );
