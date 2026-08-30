@@ -15,12 +15,14 @@ export function StockListSkeleton({ count = 25 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <Item variant="outline" className="w-full" key={i}>
           <StockLogoSkeleton />
-          <ItemContent className="gap-2">
+
+          <ItemContent>
             <Skeleton className="h-4 w-40" />
             <Skeleton className="h-3 w-16" />
           </ItemContent>
-          <ItemContent className="flex flex-col items-end gap-2">
-            <Skeleton className="h-3 w-24" />
+
+          <ItemContent className="flex flex-col items-end">
+            <Skeleton className="h-3 w-12" />
             <Skeleton className="h-3 w-20" />
           </ItemContent>
         </Item>
@@ -28,7 +30,6 @@ export function StockListSkeleton({ count = 25 }: { count?: number }) {
     </ul>
   );
 }
-
 
 export function StockList({ stocks }: { stocks: Stock[] }) {
   return (
@@ -39,7 +40,7 @@ export function StockList({ stocks }: { stocks: Stock[] }) {
           href={`/dashboard/stocks/${encodeURIComponent(stock.symbol)}`}
         >
           <Item variant="outline" className="w-full">
-               <StockLogo symbol={stock.symbol} />
+            <StockLogo symbol={stock.symbol} />
 
             <ItemContent>
               <ItemTitle>{stock.name}</ItemTitle>

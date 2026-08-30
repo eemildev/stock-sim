@@ -84,21 +84,23 @@ export function ChartAreaInteractive({
   return (
     <Card className="@container/card">
       <CardHeader>
-        <div className="grid flex-1 gap-1">
-          <StockLogo symbol={stock?.symbol ?? ""} />
-          <CardTitle>{stock?.name ?? "Stock"}</CardTitle>
+    <div className="flex items-center gap-3">
+      <StockLogo symbol={stock?.symbol ?? ""} />
 
-          <CardDescription>
-            <span className="hidden @[540px]/card:block">
-              {stock?.exchange ?? "Stock price"} · {timeRange}
-            </span>
+      <div className="grid flex-1 gap-1">
+        <CardTitle>{stock?.name ?? "Stock"}</CardTitle>
 
-            <span className="@[540px]/card:hidden">
-              {stock?.exchange ?? "Stock price"}
-            </span>
-          </CardDescription>
-        </div>
+        <CardDescription>
+          <span className="hidden @[540px]/card:block">
+            {stock?.exchange ?? "Stock price"} · {timeRange}
+          </span>
 
+          <span className="@[540px]/card:hidden">
+            {stock?.exchange ?? "Stock price"}
+          </span>
+        </CardDescription>
+      </div>
+ </div>
         <CardAction>
           {/* Desktop */}
           <ToggleGroup
