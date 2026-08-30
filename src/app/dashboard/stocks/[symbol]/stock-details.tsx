@@ -37,7 +37,7 @@ export function StockDetails({ quote, stock, portfolios }: { quote: Quote, stock
         <CardDescription
           className={quote.d > 0 ? "text-green-500" : "text-red-500"}
         >
-          Change: ${quote.d.toFixed(2)}
+          Change: ${quote.d}
         </CardDescription>
         <CardDescription
           className={quote.dp > 0 ? "text-green-500" : "text-red-500"}

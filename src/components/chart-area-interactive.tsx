@@ -240,7 +240,7 @@ export function ChartAreaInteractive({
                     });
                   }}
                   formatter={(value) => {
-                    return [`$${Number(value).toFixed(2)}`, " Close"];
+                    return [`$${Number(value)}`, " Close"];
                   }}
                 />
               }

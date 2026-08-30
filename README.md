@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# stock-sim
+
+A real-time stock market simulation platform built with Next.js and React. This application leverages modern web technologies to provide stock data visualization, secure authentication, and a scalable database architecture.
+
+## Features
+- Email and Google authentication
+- Create portfolios with simulated funds
+- Browse and search stocks with pagination
+- Buy stocks using simulated funds
+- Sell stocks from your portfolio
+- View detailed stock information with historical price charts
+- Track portfolio holdings, transactions, and performance over time
+
+## Tech Stack
+**Core Framework**
+* [Next.js (App Router)](https://nextjs.org/) - React framework
+* [React 19](https://react.dev/) - UI library
+
+**Database & Authentication**
+* [Drizzle ORM](https://orm.drizzle.team/) - Type-safe database ORM
+* [Neon Database](https://neon.tech/) - Serverless Postgres database
+* [Better Auth](https://better-auth.com/) - Secure authentication (with Drizzle adapter)
+
+**Data & APIs**
+* [Twelve Data](https://twelvedata.com/) - Historical stock data (free-tier limits 8 requests/min, 800/day)
+* [Finnhub](https://finnhub.io/) - Fresh stock data (free-tier limits 60 requests/min) 
+* [Logo.dev](https://www.logo.dev/) - Company logos API
+
+**Styling & UI Components**
+* [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework
+* [Shadcn UI](https://ui.shadcn.com/) - Accessible UI components
+* [Recharts](https://recharts.org/) - Composable charting library
+* [Base UI](https://base-ui.com/) - Unstyled UI components for React
+* [Lucide React](https://lucide.dev/) - Beautiful icons
+* [Sonner](https://sonner.emilkowal.ski/) - Toast notifications
+* [Next Themes](https://github.com/pacocoursey/next-themes) - Dark/Light mode support
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+* **Node.js** (v20+ recommended)
+* **pnpm** (v11.21.0+ recommended)
+
+## Environment Variables
+
+Create a `.env` file in the root directory and add the following variables based on your dependencies:
+
+```env
+# Database configuration
+DATABASE_URL=your_db_url
+
+# BetterAuth configuration
+BETTER_AUTH_SECRET=your_better_auth_secret
+BETTER_AUTH_URL=base_url_of_your_app
+
+# Google OAuth configuration
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Twelve Data API configuration
+TWELVEDATA_SECRET=your_twelvedata_secret
+
+# Finnhub API configuration
+FINNHUB_API_KEY=your_finnhub_api_key
+FINNHUB_API_SECRET=your_finnhub_api_secret
+
+# Logo API configuration
+LOGO_DEV_TOKEN=your_logo_dev_token
+```
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Generate and push the database schema:**
+   ```bash
+   pnpm db:generate
+   pnpm db:migrate
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Start the development server:**
+   ```bash
+   pnpm dev
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. **Open the application:**
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
