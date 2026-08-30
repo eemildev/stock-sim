@@ -14,7 +14,7 @@ export function HoldingsItem({
   profit: number;
   percentage: number;
 }) {
-  const profitPrefix = profit > 0 ? "+" : "-";
+  const profitPrefix = profit > 0 ? "+" : profit < 0 ? "-" : "";
   function slice(profit: number): string {
     const profitString = profit.toFixed(2);
     return profitString.startsWith("-") ? profitString.slice(1) : profitString;

@@ -51,6 +51,7 @@ export default async function StockPage({
     <div className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-6 p-6 md:p-10">
       <ChartAreaInteractive stock={stock} values={timeseriesData.values} />
       <StockDetails quote={quoteData} stockId={stock.id} stock={stock} portfolios={portfolios} />
-    </div>
+    </div> 
+
   );
 }

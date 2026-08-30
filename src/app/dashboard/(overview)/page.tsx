@@ -2,14 +2,15 @@
 
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { AddPortfolio } from "./add-portfolio";
+import { AddPortfolio } from "../add-portfolio";
 import { getPortfolios } from "@/services/portfolios";
 import { getHoldingsByPortfolioId } from "@/services/holdings";
 import { getQuote } from "@/services/stocks";
 import { FilterPortfolio } from "@/components/filter-portfolio";
-import { HoldingsTable } from "./holdings-table";
+import { HoldingsTable } from "../holdings-table";
 import { getTransactionsByPortfolioId } from "@/services/transactions";
-import { HoldingsItem } from "./holdings-item";
+import { HoldingsItem } from "../holdings-item";
+import { HoldingsItemSkeleton, HoldingsTableSkeleton } from "./loading";
 
 export default async function Dashboard({
   searchParams,
@@ -30,14 +31,11 @@ export default async function Dashboard({
   const { portfolioId } = await searchParams;
   const portfolios = await getPortfolios(session.user.id);
   const selectedPortfolioId = Number(portfolioId) || portfolios[0]?.id;
-  const holdings = await getHoldingsByPortfolioId(
-    selectedPortfolioId,
-    session.user.id,
-  );
-  const transactions = await getTransactionsByPortfolioId(
-    selectedPortfolioId,
-    session.user.id,
-  );
+
+  const [holdings, transactions] = await Promise.all([
+    getHoldingsByPortfolioId(selectedPortfolioId, session.user.id),
+    getTransactionsByPortfolioId(selectedPortfolioId, session.user.id),
+  ]);
 
   const transactionsValue = transactions.reduce((acc, transaction) => {
     if (transaction.type === "sell") {
@@ -59,7 +57,10 @@ export default async function Dashboard({
   }, 0);
 
   const profit = holdingsValue - transactionsValue;
-  const percentage = !isNaN(transactionsValue) && transactionsValue !== 0 ? (profit / transactionsValue) * 100 : 0;
+  const percentage =
+    !isNaN(transactionsValue) && transactionsValue !== 0
+      ? (profit / transactionsValue) * 100
+      : 0;
 
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-6 p-6 md:p-10">
@@ -70,14 +71,13 @@ export default async function Dashboard({
         profit={profit}
         percentage={percentage}
       />
-      
+
       <HoldingsTable
         holdingsWithQuotes={holdingsWithQuotes}
         holdingsValue={holdingsValue}
         transactions={transactions}
         percentage={percentage}
       />
-      
     </div>
   );
 }

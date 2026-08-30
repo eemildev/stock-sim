@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { StockLogo } from "@/components/stock-logo";
 
 import {
   Card,
@@ -84,6 +85,7 @@ export function ChartAreaInteractive({
     <Card className="@container/card">
       <CardHeader>
         <div className="grid flex-1 gap-1">
+          <StockLogo symbol={stock?.symbol ?? ""} />
           <CardTitle>{stock?.name ?? "Stock"}</CardTitle>
 
           <CardDescription>
