@@ -1,12 +1,10 @@
 # Stock Sim
 
-A stock market simulation platform built with Next.js, React, TypeScript, and PostgreSQL.
+Stock Sim is a full-stack investing simulator designed to provide a realistic trading experience without real financial risk. The project focuses on authentication, transactional portfolio management, third-party market-data integration, and historical performance visualization.
 
-Practice investing with simulated funds, explore stocks, view historical price data, and manage a virtual portfolio.
+[Live Demo](https://stock-sim-phi.vercel.app)
 
-### Live Demo
-https://stock-sim-phi.vercel.app
-
+<img width="1920" height="1080" alt="output" src="https://github.com/user-attachments/assets/bbf0f900-e711-4b0d-ae13-acd9c367bef3" />
 
 ## Features
 - Email and Google authentication
@@ -17,7 +15,7 @@ https://stock-sim-phi.vercel.app
 - View detailed stock information with historical price charts
 - Track portfolio holdings, transactions, and performance over time
 - Dark / Light mode
-
+  
 ## Tech Stack
 - Next.js (App Router) & React 19
 - TypeScript
@@ -30,6 +28,7 @@ https://stock-sim-phi.vercel.app
 - next-themes
 - Playwright
 - Vitest
+
 ## Data
 - Finnhub
 - Twelve Data
