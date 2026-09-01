@@ -68,10 +68,11 @@ export const getTimeSeries = unstable_cache(
 export const getQuote = async (symbol: string) => {
   const symbolUpper = symbol.toUpperCase();
   const response = await fetch(
-    `https://finnhub.io/api/v1/quote?symbol=${symbolUpper}&token=${process.env.FINNHUB_API_KEY}`
+    `https://finnhub.io/api/v1/quote?symbol=${symbolUpper}&token=${process.env.FINNHUB_API_KEY}`,
+    { next: { revalidate: 20 } } // revalidate every 20 seconds
   );
   if (!response.ok) {
     throw new Error(`Finnhub API error: ${response.status}`);
   }
   return await response.json();
-};
+}

@@ -10,7 +10,6 @@ import { FilterPortfolio } from "@/components/filter-portfolio";
 import { HoldingsTable } from "../holdings-table";
 import { getTransactionsByPortfolioId } from "@/services/transactions";
 import { HoldingsItem } from "../holdings-item";
-import { HoldingsItemSkeleton, HoldingsTableSkeleton } from "./loading";
 
 export default async function Dashboard({
   searchParams,
@@ -71,7 +70,6 @@ export default async function Dashboard({
         profit={profit}
         percentage={percentage}
       />
-
       <HoldingsTable
         holdingsWithQuotes={holdingsWithQuotes}
         holdingsValue={holdingsValue}

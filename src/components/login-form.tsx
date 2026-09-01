@@ -47,8 +47,8 @@ export function LoginForm({
   useEffect(() => {
     if (state.success) {
       toast.success("Successful Sign-in")
-      router.replace("/dashboard");
       router.refresh();
+      router.replace("/dashboard");
     }
   }, [state, router]);
 

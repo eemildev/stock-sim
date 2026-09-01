@@ -57,7 +57,7 @@ export function PortfolioForm({
       </div>
       <div className="space-y-2">
         <Field>
-          <FieldLabel>Cash balance</FieldLabel>
+          <FieldLabel htmlFor="cashBalance">Cash balance</FieldLabel>
           <Input
             id="cashBalance"
             name="cashBalance"
