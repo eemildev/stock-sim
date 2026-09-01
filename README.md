@@ -1,6 +1,6 @@
 # Stock Sim
 
-Stock Sim is a full-stack investing simulator designed to provide a realistic trading experience without real financial risk. The project focuses on authentication, transactional portfolio management, third-party market-data integration, and historical performance visualization.
+Full-stack stock-market simulator for practicing stock trading with simulated funds. The project focuses on authentication, transactional portfolio management, third-party market-data integration, and historical performance visualization.
 
 [Live Demo](https://stock-sim-phi.vercel.app)
 
