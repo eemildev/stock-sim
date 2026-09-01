@@ -1,39 +1,39 @@
-# stock-sim
+# Stock Sim
 
-A real-time stock market simulation platform built with Next.js and React. This application leverages modern web technologies to provide stock data visualization, secure authentication, and a scalable database architecture.
+A stock market simulation platform built with Next.js, React, TypeScript, and PostgreSQL.
+
+Practice investing with simulated funds, explore stocks, view historical price data, and manage a virtual portfolio.
+
+### Live Demo
+https://stock-sim-phi.vercel.app
+
 
 ## Features
 - Email and Google authentication
 - Create portfolios with simulated funds
-- Browse and search stocks with pagination
+- Browse and search stocks
 - Buy stocks using simulated funds
 - Sell stocks from your portfolio
 - View detailed stock information with historical price charts
 - Track portfolio holdings, transactions, and performance over time
+- Dark / Light mode
 
 ## Tech Stack
-**Core Framework**
-* [Next.js (App Router)](https://nextjs.org/) - React framework
-* [React 19](https://react.dev/) - UI library
-
-**Database & Authentication**
-* [Drizzle ORM](https://orm.drizzle.team/) - Type-safe database ORM
-* [Neon Database](https://neon.tech/) - Serverless Postgres database
-* [Better Auth](https://better-auth.com/) - Secure authentication (with Drizzle adapter)
-
-**Data & APIs**
-* [Twelve Data](https://twelvedata.com/) - Historical stock data (free-tier limits 8 requests/min, 800/day)
-* [Finnhub](https://finnhub.io/) - Fresh stock data (free-tier limits 60 requests/min) 
-* [Logo.dev](https://www.logo.dev/) - Company logos API
-
-**Styling & UI Components**
-* [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework
-* [Shadcn UI](https://ui.shadcn.com/) - Accessible UI components
-* [Recharts](https://recharts.org/) - Composable charting library
-* [Base UI](https://base-ui.com/) - Unstyled UI components for React
-* [Lucide React](https://lucide.dev/) - Beautiful icons
-* [Sonner](https://sonner.emilkowal.ski/) - Toast notifications
-* [Next Themes](https://github.com/pacocoursey/next-themes) - Dark/Light mode support
+- Next.js (App Router) & React 19
+- TypeScript
+- Drizzle ORM & Neon PostgreSQL
+- Better Auth
+- Tailwind CSS v4
+- shadcn/ui & Base UI
+- Recharts
+- Lucide React & Sonner
+- next-themes
+- Playwright
+- Vitest
+## Data
+- Finnhub
+- Twelve Data
+- Logo.dev
 
 ## Prerequisites
 
@@ -88,3 +88,15 @@ LOGO_DEV_TOKEN=your_logo_dev_token
 
 4. **Open the application:**
    Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Testing
+
+Run unit and integration tests:
+   ```bash
+   pnpm test
+   ```
+
+Run end-to-end tests:
+   ```bash
+   pnpm test:e2e
+   ```
